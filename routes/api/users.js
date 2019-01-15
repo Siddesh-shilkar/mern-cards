@@ -7,6 +7,10 @@ const User = require('../../models/User');
 const keys = require('../../config/keys').secretOrKey;
 const passport = require('passport');
 
+//load input validation
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
+
 // @route GET api/users/test
 // @desc Test post route
 // @access Public
@@ -16,6 +20,12 @@ router.get('/test', (req, res) => res.json({msg: "Users Works"}));
 // @desc Register User
 // @access Public
 router.post('/register', (req, res) => {
+    const { errors, isValid } = validateRegisterInput(req.body);
+
+    if(!isValid){
+        return res.status(400).json(errors);
+    }
+
     User.findOne({email: req.body.email})
         .then(user => {
             if(user){
@@ -47,6 +57,12 @@ router.post('/register', (req, res) => {
 // @desc Login User / return Token
 // @access Public
 router.post('/login', (req, res) => {
+    const { errors, isValid } = validateLoginInput(req.body);
+
+    if(!isValid){
+        return res.status(400).json(errors);
+    }
+
     const email = req.body.email;
     const password = req.body.password;
 
@@ -55,7 +71,8 @@ router.post('/login', (req, res) => {
         .then(user => {
             //check for user
             if(!user){
-                return res.status(404).json({email: 'User not found'})
+                errors.email = 'User not found';
+                return res.status(404).json(errors)
             }
 
             //check password
@@ -74,7 +91,8 @@ router.post('/login', (req, res) => {
                                 res.json({success: true, token: 'Bearer ' + token})
                         });
                     }else{
-                        return res.status(400).json({password: 'Password incorrect'});
+                        error.password = 'Password Incorrect';
+                        return res.status(400).json(errors);
                     }
                 })
         });
