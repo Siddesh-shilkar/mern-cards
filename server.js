@@ -9,9 +9,12 @@ const cards = require('./routes/api/cards');
 
 const app = express();
 
+app.use(express.static('./public'));
+
 //Body parser
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '10mb', extended: true}))
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}));
+
 
 // DB config
 const db = require('./config/keys').mongoURI;
