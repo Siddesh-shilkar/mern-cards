@@ -14,17 +14,17 @@ module.exports = function validateRegisterInput(data){
     if(validator.isEmpty(data.name)){
         errors.name = 'Name field is required';
     }
-    if(validator.isEmpty(data.email)){
-        errors.email = 'Email field is required';
-    }
     if(!validator.isEmail(data.email)){
         errors.email = 'Email is invalid';
     }
-    if(validator.isEmpty(data.password)){
-        errors.password = 'Password field is required';
+    if(validator.isEmpty(data.email)){
+        errors.email = 'Email field is required';
     }
     if(!validator.isLength(data.password, {min: 6, max: 30})){
         errors.password = 'Password must be atleast 6 characters';
+    }
+    if(validator.isEmpty(data.password)){
+        errors.password = 'Password field is required';
     }
     if(validator.isEmpty(data.password2)){
         errors.password2 = 'Confirm Password field is required';
